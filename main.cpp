@@ -1894,7 +1894,7 @@ void worker_run(const uint16_t worker_num, const std::string plot_path)
         {
             cpu_usage = double(sum_time_proc) / milliseconds / 1000 / 1000;
         }
-        std::cout << "milliseconds " << milliseconds << ", thread_speed " << thread_speed << ", cpu_usage " << cpu_usage << std::endl;
+        //std::cout << "milliseconds " << milliseconds << ", thread_speed " << thread_speed << ", cpu_usage " << cpu_usage << std::endl;
         std::cout << std::put_time(std::localtime(&time_now_c), "%T") << " Thread \"" << plot_path << "\"";
         std::cout << " @ " << milliseconds / 1000.0 << " s (" << std::fixed << thread_speed << " MiB/s)";
         std::cout << " CPU " << std::fixed << cpu_usage << " %" << std::endl;
