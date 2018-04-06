@@ -25,6 +25,7 @@ include_directories("${PROJECT_SOURCE_DIR}/libs/nlohmann-json"
 add_executable(minerpp ${miner_SOURCES})
 set_property(TARGET minerpp PROPERTY CXX_STANDARD 14)
 set_property(TARGET minerpp PROPERTY CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS "-O2")        ## Optimize
 
 target_link_libraries(minerpp
 					  stdc++fs
