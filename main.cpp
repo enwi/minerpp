@@ -49,15 +49,13 @@ const int INVALID_HANDLE_VALUE = -1;
 #define lseek64(handle,offset,whence) lseek(handle,offset,whence)
 #endif
 
-#ifdef __AVX2__
+/*#ifdef __AVX2__
 	char const *const version = "v1.170820_AVX2";
-#else
-	#ifdef __AVX__
-		char const *const version = "v1.170820_AVX";
-	#else
-		char const *const version = "v1.170820";
-	#endif
-#endif
+#elif __AVX__
+	char const *const version = "v1.170820_AVX";
+#else*/
+	char const *const version = "v1.170820";
+//#endif
 
 // needed for lseek64
 #ifndef _LARGEFILE64_SOURCE
@@ -1187,7 +1185,7 @@ void sender_run()
                     {
                         total = total + it->second;
                     }
-                    bytes = snprintf(buffer, buffer_size, "POST /burst?requestType=submitNonce&accountId=%llu&nonce=%llu&deadline=%llu HTTP/1.0\r\nHost: %s:%s\r\nX-Miner: Blago %s\r\nX-Capacity: %llu\r\nContent-Length: 0\r\nConnection: close\r\n\r\n", share_it->account_id, share_it->nonce, share_it->best, server_address.c_str(), server_port.c_str(), version, total);
+                    bytes = snprintf(buffer, buffer_size, "POST /burst?requestType=submitNonce&accountId=%llu&nonce=%llu&deadline=%llu HTTP/1.0\r\nHost: %s:%s\r\nX-Miner: minerpp %s\r\nX-Capacity: %llu\r\nContent-Length: 0\r\nConnection: close\r\n\r\n", share_it->account_id, share_it->nonce, share_it->best, server_address.c_str(), server_port.c_str(), version, total);
                 }
 
                 // Sending to server
@@ -1751,23 +1749,21 @@ void worker_run(const uint16_t worker_num, const std::string plot_path)
                 if (i + cache_size_local > stagger)
                 {
                     cache_size_local = stagger - i;  // остаток
-                #ifdef __AVX2__
+                /*#ifdef __AVX2__
                     if (cache_size_local < 8)
                     {
                         console::SetColor(console::color::FG_YELLOW);
                         std::cout << "[Worker] Warning: " << cache_size_local << std::endl;
                         console::SetColor(console::color::RESET);
                     }
-                #else
-                #ifdef __AVX__
+                #elif __AVX__
                     if (cache_size_local < 4)
                     {
                         console::SetColor(console::color::FG_YELLOW);
                         std::cout << "[Worker] Warning: " << cache_size_local << std::endl;
                         console::SetColor(console::color::RESET);
                     }
-                #endif
-                #endif
+                #endif*/
                 }
                 //liDistanceToMove.QuadPart = start + i*64;
                 //if (!SetFilePointerEx(ifile, liDistanceToMove, nullptr, FILE_BEGIN))
@@ -1820,15 +1816,13 @@ void worker_run(const uint16_t worker_num, const std::string plot_path)
                 if (bytes == cache_size_local * 64)
                 {
                     start_time_proc = std::chrono::system_clock::now();
-                #ifdef __AVX2__
+                /*#ifdef __AVX2__
                     procscoop_m256_8(n + nonce + i, cache_size_local, cache, acc, p.name);  // Process block AVX2
-                #else
-                #ifdef __AVX__
+                #elif __AVX__
                     procscoop_m_4(n + nonce + i, cache_size_local, cache, acc, p.name);     // Process block AVX
-                #else
+                #else*/
                     procscoop_sph(n + nonce + i, cache_size_local, cache, acc, p.name);     // Process block SSE4
-                #endif
-                #endif
+                //#endif
                     sum_time_proc += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now() - start_time_proc).count();
                     worker_progress[worker_num].reads_bytes += bytes;
                 }
